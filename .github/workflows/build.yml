@@ -28,5 +28,5 @@ jobs:
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
-          name: glove80.uf2
-          path: glove80.uf2
+          name: firmware
+          path: *.uf2
