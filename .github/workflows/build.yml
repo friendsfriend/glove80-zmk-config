@@ -23,8 +23,12 @@ jobs:
           skipPush: true
       - name: Build Glove80 combined firmware
         run: nix-build config -o combined
+      - name: Build Glove80 combined firmare with homerow mods
+        run: nix-build config-homerow-mods -o combined-homerow-mods
       - name: Copy result out of nix store
         run: cp combined/glove80.uf2 glove80.uf2
+      - name: Copy result out of nix store with homerow mods
+        run: cp combined-homerow-mods/glove80.uf2 glove80-homerow-mods.uf2
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
