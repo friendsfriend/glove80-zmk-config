@@ -7,6 +7,14 @@ Two versions of the firmware are included in the repository
 - A US layout with german locale and and an additional layer for german special characters
 - The fist layout extended by homerow modifications
 
+## Layout
+### Base Layer
+![Base Layer](./img/Layer1.PNG)
+### Shift Layer (Using a separate Layer to emulate US Layout)
+![Shift Layer](./img/Layer2.PNG)
+### German Symbols Layer (Using a separate Layer to make special characters accessible)
+![Symbol Layer](./img/Layer3.PNG)
+
 ## Flashing the firmare to the Glove80
 - Download the build firmware from the repository
 - Connect both halfes of the Glove80 to your computer
