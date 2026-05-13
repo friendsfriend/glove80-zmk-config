@@ -19,16 +19,94 @@
 #define MAGIC 2
 #define FACTORY_TEST 3
 
+/*
+ * Key position groups for positional hold-tap.
+ *
+ * These are based on the binding order in your default layer:
+ * positions start at 0 and count left-to-right, top-to-bottom.
+ *
+ * Left-hand home-row mods only trigger as holds when combined with
+ * RIGHT_HAND_POSITIONS.
+ *
+ * Right-hand home-row mods only trigger as holds when combined with
+ * LEFT_HAND_POSITIONS.
+ */
+
+#define LEFT_HAND_POSITIONS  \
+    0 1 2 3 4                \
+    10 11 12 13 14 15        \
+    22 23 24 25 26 27        \
+    34 35 36 37 38 39        \
+    46 47 48 49 50 51 52 53 54 \
+    64 65 66 67 68 69 70 71
+
+#define RIGHT_HAND_POSITIONS \
+    5 6 7 8 9                \
+    16 17 18 19 20 21        \
+    28 29 30 31 32 33        \
+    40 41 42 43 44 45        \
+    55 56 57 58 59 60 61 62 63 \
+    72 73 74 75 76 77 78 79
+
 / {
     behaviors {
-        // For the "layer" key, it'd nice to be able to use it as either a shift or a toggle.
-        // Configure it as a tap dance, so the first tap (or hold) is a &mo and the second tap is a &to
+        /*
+         * Left-hand home-row mods.
+         *
+         * Example:
+         * &hml LEFT_SHIFT A
+         *
+         * Hold: LEFT_SHIFT
+         * Tap:  A
+         *
+         * The hold only activates when the interrupting key is on the
+         * right-hand side.
+         */
+        hml: homerow_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MOD_LEFT";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <220>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <125>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <RIGHT_HAND_POSITIONS>;
+            hold-trigger-on-release;
+        };
 
+        /*
+         * Right-hand home-row mods.
+         *
+         * Example:
+         * &hmr RIGHT_GUI J
+         *
+         * Hold: RIGHT_GUI
+         * Tap:  J
+         *
+         * The hold only activates when the interrupting key is on the
+         * left-hand side.
+         */
+        hmr: homerow_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MOD_RIGHT";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <220>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <125>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <LEFT_HAND_POSITIONS>;
+            hold-trigger-on-release;
+        };
+
+        // For the "layer" key, it is nice to be able to use it as either a momentary layer or a toggle.
+        // First tap/hold is &mo, second tap is &to.
         layer_td: tap_dance_0 {
             compatible = "zmk,behavior-tap-dance";
             label = "LAYER_TAP_DANCE";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <400>;
             bindings = <&mo 0>, <&to 0>;
         };
 
@@ -37,7 +115,7 @@
             label = "MAGIC_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <400>;
             bindings = <&mo>, <&rgb_ug_status_macro>;
         };
     };
@@ -83,19 +161,11 @@
         compatible = "zmk,keymap";
 
         default_layer {
-            // ---------------------------------------------------------------------------------------------------------------------------------
-            // |  F1   |  F2 |  F3 |  F4  |  F5  |                                                               |  F6   |  F7   |  F8  |   F9  |  F10 |
-            // |  =    |  1  |  2  |  3   |  4   |  5   |                                                 |  6   |   7   |   8   |  9   |   0   |   -  |
-            // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                                                 |  Y   |   U   |   I   |  O   |   P   |   \  |
-            // |  ESC  |  A  |  S  |  D   |  F   |  G   |                                                 |  H   |   J   |   K   |  L   |   ;   |   '  |
-            // |   `   |  Z  |  X  |  C   |  V   |  B   | LSHFT | LCTRL | LOWER | | LGUI  | RCTRL | RSHFT |  N   |   M   |   ,   |  .   |   /   | PGUP |
-            // | MAGIC | HOME| END | LEFT | RIGHT|      | BSPC  | DEL   | LALT  | | RALT  | RET   | SPACE |      |  UP   | DOWN  |  [   |   ]   | PGDN |
-
             bindings = <
 &kp F1      &kp F2            &kp F3       &kp F4          &kp F5                                                                                              &kp F6           &kp F7           &kp F8       &kp F9                &kp F10
 &kp EQUAL   &kp N1            &kp N2       &kp N3          &kp N4          &kp N5                                                                      &kp N6  &kp N7           &kp N8           &kp N9       &kp N0                &kp MINUS
 &kp TAB     &kp Q             &kp W        &kp E           &kp R           &kp T                                                                       &kp Y   &kp U            &kp I            &kp O        &kp P                 &kp BSLH
-&kp ESC     &mt LEFT_SHIFT A  &mt LCTRL S  &mt LEFT_ALT D  &mt LEFT_GUI F  &kp G                                                                       &kp H   &mt RIGHT_GUI J  &mt RIGHT_ALT K  &mt RCTRL L  &mt RIGHT_SHIFT SEMI  &kp SQT
+&kp ESC     &hml LEFT_SHIFT A &hml LCTRL S &hml LEFT_ALT D &hml LEFT_GUI F &kp G                                                                       &kp H   &hmr RIGHT_GUI J &hmr RIGHT_ALT K &hmr RCTRL L &hmr RIGHT_SHIFT SEMI &kp SQT
 &kp GRAVE   &kp Z             &kp X        &kp C           &kp V           &kp B   &kp LSHFT  &kp LCTRL  &kp LGUI  &kp LGUI  &kp RIGHT_ALT  &kp RSHFT  &kp N   &kp M            &kp COMMA        &kp DOT      &kp FSLH              &kp PG_UP
 &magic 2 0  &kp HOME          &kp END      &kp LEFT        &kp RIGHT               &kp BSPC   &kp DEL    &mo 1     &mo 1     &kp RET        &kp SPACE          &kp UP           &kp DOWN         &kp LBKT     &kp RBKT              &kp PG_DN
             >;
@@ -123,8 +193,4 @@
             >;
         };
     };
-};
-
-&mt {
-    tapping-term-ms = <400>;
 };
