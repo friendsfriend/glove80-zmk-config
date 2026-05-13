@@ -28,7 +28,7 @@
             compatible = "zmk,behavior-tap-dance";
             label = "LAYER_TAP_DANCE";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <400>;
             bindings = <&mo 0>, <&to 0>;
         };
 
@@ -37,7 +37,7 @@
             label = "MAGIC_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <400>;
             bindings = <&mo>, <&rgb_ug_status_macro>;
         };
     };
