@@ -40,6 +40,11 @@
             tapping-term-ms = <400>;
             bindings = <&mo>, <&rgb_ug_status_macro>;
         };
+        
+        &mt {
+            tapping-term-ms = <400>; // This is the value already set by default
+        };
+
     };
 
     macros {
