@@ -20,84 +20,83 @@
 #define FACTORY_TEST 3
 
 /*
- * Key position groups for positional hold-tap.
+ * Key positions based on your default_layer binding order.
  *
- * These are based on the binding order in your default layer:
- * positions start at 0 and count left-to-right, top-to-bottom.
+ * Home-row mod positions:
  *
- * Left-hand home-row mods only trigger as holds when combined with
- * RIGHT_HAND_POSITIONS.
+ * A = 35
+ * S = 36
+ * D = 37
+ * F = 38
  *
- * Right-hand home-row mods only trigger as holds when combined with
- * LEFT_HAND_POSITIONS.
+ * J = 41
+ * K = 42
+ * L = 43
+ * ; = 44
+ *
+ * Same-hand home-row mod combinations are intentionally blocked.
+ *
+ * Examples:
+ * D then F       -> df
+ * F then D       -> fd
+ * J then K       -> jk
+ * K then L       -> kl
+ *
+ * Cross-hand combinations still work.
+ *
+ * Examples:
+ * K hold + F tap -> Right Alt + F
+ * D hold + K tap -> Left Alt + K
  */
 
-#define LEFT_HAND_POSITIONS  \
-    0 1 2 3 4                \
-    10 11 12 13 14 15        \
-    22 23 24 25 26 27        \
-    34 35 36 37 38 39        \
-    46 47 48 49 50 51 52 53 54 \
-    64 65 66 67 68 69 70 71
-
-#define RIGHT_HAND_POSITIONS \
-    5 6 7 8 9                \
-    16 17 18 19 20 21        \
-    28 29 30 31 32 33        \
-    40 41 42 43 44 45        \
+#define LEFT_HAND_HRM_TRIGGER_POSITIONS \
+    40 41 42 43 44 45 \
     55 56 57 58 59 60 61 62 63 \
     72 73 74 75 76 77 78 79
 
+#define RIGHT_HAND_HRM_TRIGGER_POSITIONS \
+    34 35 36 37 38 39 \
+    46 47 48 49 50 51 52 53 54 \
+    64 65 66 67 68 69 70 71
+
 / {
     behaviors {
-        /*
-         * Left-hand home-row mods.
-         *
-         * Example:
-         * &hml LEFT_SHIFT A
-         *
-         * Hold: LEFT_SHIFT
-         * Tap:  A
-         *
-         * The hold only activates when the interrupting key is on the
-         * right-hand side.
-         */
         hml: homerow_mod_left {
             compatible = "zmk,behavior-hold-tap";
             label = "HOMEROW_MOD_LEFT";
             #binding-cells = <2>;
-            flavor = "balanced";
+
+            flavor = "tap-preferred";
             tapping-term-ms = <220>;
             quick-tap-ms = <175>;
-            require-prior-idle-ms = <125>;
+            require-prior-idle-ms = <150>;
+
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <RIGHT_HAND_POSITIONS>;
-            hold-trigger-on-release;
+
+            /*
+             * Left-hand home-row mods A/S/D/F only become holds
+             * when paired with right-hand keys.
+             */
+            hold-trigger-key-positions = <LEFT_HAND_HRM_TRIGGER_POSITIONS>;
         };
 
-        /*
-         * Right-hand home-row mods.
-         *
-         * Example:
-         * &hmr RIGHT_GUI J
-         *
-         * Hold: RIGHT_GUI
-         * Tap:  J
-         *
-         * The hold only activates when the interrupting key is on the
-         * left-hand side.
-         */
         hmr: homerow_mod_right {
             compatible = "zmk,behavior-hold-tap";
             label = "HOMEROW_MOD_RIGHT";
             #binding-cells = <2>;
-            flavor = "balanced";
+
+            flavor = "tap-preferred";
             tapping-term-ms = <220>;
             quick-tap-ms = <175>;
-            require-prior-idle-ms = <125>;
+            require-prior-idle-ms = <150>;
+
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <LEFT_HAND_POSITIONS>;
-            hold-trigger-on-release;
+
+            /*
+             * Right-hand home-row mods J/K/L/; only become holds
+             * when paired with left-hand keys.
+             */
+            hold-trigger-key-positions = <RIGHT_HAND_HRM_TRIGGER_POSITIONS>;
         };
 
         // For the "layer" key, it is nice to be able to use it as either a momentary layer or a toggle.
